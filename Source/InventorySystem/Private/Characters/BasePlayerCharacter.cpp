@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Player/Comps/PackageCompBase.h"
 
 ABasePlayerCharacter::ABasePlayerCharacter()
 {
@@ -40,6 +41,8 @@ ABasePlayerCharacter::ABasePlayerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	PackageComponent = CreateDefaultSubobject<UPackageCompBase>(TEXT("PackageComponent"));
 }
 
 void ABasePlayerCharacter::BeginPlay()
@@ -69,6 +72,16 @@ void ABasePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void ABasePlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+}
+
+void ABasePlayerCharacter::Pick_Implementation(const FItemDataStruct& PickupItemData)
+{
+	
+}
+
+UPackageCompBase* ABasePlayerCharacter::GetPackageComp_Implementation()
+{
+	return PackageComponent;
 }
 
 void ABasePlayerCharacter::Move(const FInputActionValue& Value)

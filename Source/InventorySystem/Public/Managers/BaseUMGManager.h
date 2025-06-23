@@ -27,7 +27,7 @@ protected:
 	TMap<FString, int> WidgetIndexMap;
 
 public:
-	UBaseUMGManager();
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 	/* Get Widget */
 	UFUNCTION(BlueprintCallable, Category="BaseUMGManager")

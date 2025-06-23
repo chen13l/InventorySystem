@@ -2,8 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
+#include "Interfaces/InteractionInterface.h"
 #include "BasePlayerCharacter.generated.h"
 
+class UPackageCompBase;
 class UCameraComponent;
 class USpringArmComponent;
 class UInputAction;
@@ -11,7 +13,7 @@ class UInputMappingContext;
 struct FInputActionValue;
 
 UCLASS()
-class INVENTORYSYSTEM_API ABasePlayerCharacter : public ABaseCharacter
+class INVENTORYSYSTEM_API ABasePlayerCharacter : public ABaseCharacter,public IInteractionInterface
 {
 	GENERATED_BODY()
 
@@ -25,6 +27,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
 
+	/* IInteractionInterface */
+	virtual void Pick_Implementation(const FItemDataStruct& PickupItemData) override;
+	virtual UPackageCompBase* GetPackageComp_Implementation() override;
+	/* End IInteractionInterface */
 protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
@@ -47,6 +53,8 @@ private:
 	USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPackageCompBase* PackageComponent;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input", meta=(AllowPrivateAccess=true))

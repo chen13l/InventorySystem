@@ -14,4 +14,9 @@ class INVENTORYSYSTEM_API UInventorySystemFuncLib : public UBlueprintFunctionLib
 public:
 	UFUNCTION(BlueprintCallable, Category = "InventorySystemHealper|Manager", meta=(DefaultToSelf="WorldContextObject"))
 	static UBaseUMGManager* GetBaseUMGManager(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category = "InventorySystemHealper|Manager")
+	static UDataTable* GetItemDataTable();
+	UFUNCTION(BlueprintCallable, Category = "InventorySystemHealper|Manager")
+	static TArray<FName> GetItemDataRowNames();
 };

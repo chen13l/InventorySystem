@@ -1,8 +1,9 @@
-﻿#include "UI/Managers/BaseUMGManager.h"
+﻿#include "Managers/BaseUMGManager.h"
 #include "UI/Widgets/BaseUserWidget.h"
 
-UBaseUMGManager::UBaseUMGManager()
+void UBaseUMGManager::Initialize(FSubsystemCollectionBase& Collection)
 {
+	Super::Initialize(Collection);
 }
 
 UBaseUserWidget* UBaseUMGManager::GetUMGWidget(TSubclassOf<UBaseUserWidget> WidgetClass, int InIndex, bool CanLastWidget)
