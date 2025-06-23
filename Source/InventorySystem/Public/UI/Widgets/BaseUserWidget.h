@@ -21,7 +21,17 @@ public:
 	void OnHideUMG();
 	void OnDestroyUMG();
 	
+	UFUNCTION(BlueprintCallable)
+	void SetWidgetController(UObject* NewWidgetController);
+	
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UObject> WidgetController;
+	
 protected:
+	// bind callbacks
+	UFUNCTION(BlueprintNativeEvent)
+	void OnWidgetControllerSet();
+
 	virtual void OnCreate();
 	virtual void OnShow();
 	virtual void OnHide();

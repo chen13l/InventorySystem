@@ -5,6 +5,16 @@ void UBaseUserWidget::NativeConstruct()
 	Super::NativeConstruct();
 }
 
+void UBaseUserWidget::SetWidgetController(UObject* NewWidgetController)
+{
+	WidgetController = NewWidgetController;
+	OnWidgetControllerSet();
+}
+
+void UBaseUserWidget::OnWidgetControllerSet_Implementation()
+{
+}
+
 void UBaseUserWidget::OnCreateUMG(int Index)
 {
 	UMGIndex = Index;

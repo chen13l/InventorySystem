@@ -1,6 +1,8 @@
 ﻿#include "Helpers/InventorySystemFuncLib.h"
 #include "Kismet/GameplayStatics.h"
 #include "Managers/BaseUMGManager.h"
+#include "UI/InventoryHUD.h"
+#include "UI/WidgetControllers/PackageOverlayController.h"
 
 UBaseUMGManager* UInventorySystemFuncLib::GetBaseUMGManager(UObject* WorldContextObject)
 {
@@ -36,4 +38,32 @@ TArray<FName> UInventorySystemFuncLib::GetItemDataRowNames()
 	}
 
 	return RowNames;
+}
+
+bool UInventorySystemFuncLib::MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutParams, AInventoryHUD* OutHUD)
+{
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject,0))
+	{
+		OutHUD = Cast<AInventoryHUD>(PlayerController->GetHUD());
+		if (OutHUD)
+		{
+			OutParams.PlayerController = PlayerController;
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+UPackageOverlayController* UInventorySystemFuncLib::GetPackageOverlayController(UObject* WorldContextObject)
+{
+	FWidgetControllerParams WidgetControllerParams;
+	AInventoryHUD* InventoryHUD =nullptr;
+	if (MakeWidgetControllerParams(WorldContextObject, WidgetControllerParams, InventoryHUD))
+	{
+		return InventoryHUD->GetPackageOverlayController(WidgetControllerParams);
+	}
+	return nullptr;
 }
