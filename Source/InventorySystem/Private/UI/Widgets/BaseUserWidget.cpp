@@ -3,6 +3,13 @@
 void UBaseUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	GEngine->GameViewport->Viewport->ViewportResizedEvent.AddUObject(this, &ThisClass::OnViewportChangedCallback);
+}
+
+void UBaseUserWidget::OnViewportChangedCallback(FViewport* Viewport, uint32 Param)
+{
+	OnViewportChanged.Broadcast(Viewport->GetSizeXY());
 }
 
 void UBaseUserWidget::SetWidgetController(UObject* NewWidgetController)
