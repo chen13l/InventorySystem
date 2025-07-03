@@ -61,6 +61,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnDataChangedSignature OnDataChanged;
 
+	FORCEINLINE TArray<FItemDataStruct> GetItemDatas(){return ItemDatas;}
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<APlayerController> PlayerController;
@@ -69,4 +70,5 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UPackageCompBase* PackageComp;
+	TArray<FItemDataStruct> ItemDatas;
 };

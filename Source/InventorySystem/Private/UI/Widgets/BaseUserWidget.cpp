@@ -25,8 +25,8 @@ void UBaseUserWidget::OnWidgetControllerSet_Implementation()
 void UBaseUserWidget::OnCreateUMG(int Index)
 {
 	UMGIndex = Index;
-	OnBindLocalEvent();
 	OnCreate();
+	OnBindLocalEvent();
 }
 
 void UBaseUserWidget::OnShowUMG()

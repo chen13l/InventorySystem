@@ -2,12 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/UIInterfaces.h"
 #include "BaseUserWidget.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnViewportChangedSignature, FVector2D, NewSize);
 
 UCLASS()
-class INVENTORYSYSTEM_API UBaseUserWidget : public UUserWidget
+class INVENTORYSYSTEM_API UBaseUserWidget : public UUserWidget, public IUIInterfaces
 {
 	GENERATED_BODY()
 
@@ -17,7 +18,7 @@ private:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnViewportChangedSignature OnViewportChanged;
-	
+
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="BaseUserWidget")
 	int UMGIndex = 0;
 
@@ -28,16 +29,17 @@ public:
 	void OnShowUMG();
 	void OnHideUMG();
 	void OnDestroyUMG();
+	virtual int GetUMGIndex_Implementation() override { return UMGIndex; }
 
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetController(UObject* NewWidgetController);
 
-	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
-	void SetRootSize(FVector2D NewSize);
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetRootSize_Implementation(FVector2D InNewSize) override;
 
 protected:
-	void OnViewportChangedCallback( FViewport* Viewport, uint32 Param);
-	
+	void OnViewportChangedCallback(FViewport* Viewport, uint32 Param);
+
 	// bind callbacks
 	UFUNCTION(BlueprintNativeEvent)
 	void OnWidgetControllerSet();
@@ -49,5 +51,4 @@ protected:
 
 	virtual void OnBindLocalEvent();
 	virtual void OnUnBindLocalEvent();
-
 };
