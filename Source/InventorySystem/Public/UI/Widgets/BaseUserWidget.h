@@ -22,9 +22,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="BaseUserWidget")
 	int UMGIndex = 0;
 
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UObject> WidgetController;
-
 	void OnCreateUMG(int Index = 0);
 	void OnShowUMG();
 	void OnHideUMG();
@@ -51,4 +48,7 @@ protected:
 
 	virtual void OnBindLocalEvent();
 	virtual void OnUnBindLocalEvent();
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UObject> WidgetController;
 };

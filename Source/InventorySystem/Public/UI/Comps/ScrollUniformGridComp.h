@@ -4,6 +4,7 @@
 #include "UI/Widgets/BaseUserWidget.h"
 #include "ScrollUniformGridComp.generated.h"
 
+class UPackageOverlayController;
 class UUniformGridPanel;
 class UScrollBox;
 class USizeBox;
@@ -21,7 +22,7 @@ public:
 	void SetNumSlotARow(int InNewNumSlotARow);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	bool UpdateSlotData(int SlotIndex);
+	bool UpdateSlotData(UWidget* TargetWidget,int SlotIndex);
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void UpdateAllSlots();
 
@@ -29,6 +30,7 @@ private:
 	virtual void OnCreate() override;
 	virtual void OnBindLocalEvent() override;
 	virtual void OnUnBindLocalEvent() override;
+	virtual void OnWidgetControllerSet_Implementation() override;
 
 	FVector2D CalSlotSize();
 	FVector2D GetActualSlotSize();
@@ -37,6 +39,9 @@ private:
 	UFUNCTION()
 	void OnUserScrolledCallback(float InOffset);
 	void MoveSlotRow(bool bMoveDown, int InRowOffset = 1);
+
+	UFUNCTION()
+	void SlotDataChangedCallback(int InIndex, FItemDataStruct NewData);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Scroll Uniform Grid", meta=(BindWidget))
@@ -47,12 +52,15 @@ protected:
 	TObjectPtr<UScrollBox> ScrollBox;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Scroll Uniform Grid", meta=(BindWidget))
 	TObjectPtr<UUniformGridPanel> UniformGridPanel_Content;
-	
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Scroll Uniform Grid", meta=(AllowPrivateAccess))
 	TSubclassOf<UBaseUserWidget> SlotWidgetClass;
 	TArray<TArray<TObjectPtr<UWidget>>> MinSlotsShown;
 	TArray<FItemDataStruct> SlotDatas;
+
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
+	UPackageOverlayController* PackageOverlayController;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Scroll Uniform Grid", meta=(AllowPrivateAccess))
 	int NumSlotARow = 0;
@@ -65,5 +73,4 @@ private:
 	FVector2D LastSlotSize = FVector2D::ZeroVector;
 	bool bShouldResetSlotPosition = false;
 	bool bSizeChanged = false;
-
 };

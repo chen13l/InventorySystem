@@ -8,6 +8,7 @@
 #include "Helpers/InventorySystemFuncLib.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Managers/BaseUMGManager.h"
+#include "UI/WidgetControllers/PackageOverlayController.h"
 
 void UScrollUniformGridComp::OnCreate()
 {
@@ -164,7 +165,7 @@ void UScrollUniformGridComp::MoveSlotRow(bool bMoveDown, int InRowOffset/* =1 */
 				SlotAsUniformGridSlot->SetRow(FMath::Max(InRowOffset + InsertRow, 0));
 
 				int32 WidgetIndexInData = SlotAsUniformGridSlot->GetRow() * NumSlotARow + SlotAsUniformGridSlot->GetColumn();
-				UpdateSlotData(WidgetIndexInData);
+				UpdateSlotData(RowWidget, WidgetIndexInData);
 			}
 		}
 	}
@@ -205,6 +206,43 @@ void UScrollUniformGridComp::OnUnBindLocalEvent()
 	ScrollBox->OnUserScrolled.RemoveAll(this);
 }
 
+void UScrollUniformGridComp::SlotDataChangedCallback(int InIndex, FItemDataStruct NewData)
+{
+	if (SlotDatas.Num() - 1 < InIndex)
+	{
+		if (PackageOverlayController)
+		{
+			SlotDatas = PackageOverlayController->GetItemDatas();
+		}
+		else
+		{
+			SlotDatas.SetNum(InIndex + 1);
+		}
+	}
+	SlotDatas[InIndex] = NewData;
+
+	// update ui
+	if (MinSlotsShown.Num() > InIndex)
+	{
+		auto TargetSlot = MinSlotsShown[(InIndex / NumSlotARow) % MinSlotsShown.Num()][InIndex % NumSlotARow];
+		UpdateSlotData(TargetSlot, InIndex);
+	}
+}
+
+void UScrollUniformGridComp::OnWidgetControllerSet_Implementation()
+{
+	Super::OnWidgetControllerSet_Implementation();
+
+	if (IsValid(WidgetController))
+	{
+		if (Cast<UPackageOverlayController>(WidgetController))
+		{
+			PackageOverlayController = Cast<UPackageOverlayController>(WidgetController);
+			PackageOverlayController->OnDataChangedDelegate.AddDynamic(this, &UScrollUniformGridComp::SlotDataChangedCallback);
+		}
+	}
+}
+
 void UScrollUniformGridComp::SetMaxSlotNum(int InNewMaxSlotNum)
 {
 	MaxSlotNum = InNewMaxSlotNum;
@@ -227,7 +265,7 @@ void UScrollUniformGridComp::UpdateAllSlots_Implementation()
 			if (UUniformGridSlot* SlotAsUniformGridSlot = UWidgetLayoutLibrary::SlotAsUniformGridSlot(RowWidget))
 			{
 				int SlotIndex = SlotAsUniformGridSlot->GetRow() * NumSlotARow + SlotAsUniformGridSlot->GetColumn();
-				if (!UpdateSlotData(SlotIndex) && RowWidget->Implements<USlotRelatedInterface>())
+				if (!UpdateSlotData(RowWidget, SlotIndex) && RowWidget->Implements<USlotRelatedInterface>())
 				{
 					FItemDataStruct DataStruct;
 					ISlotRelatedInterface::Execute_SetSlotData(RowWidget, DataStruct);
@@ -237,11 +275,17 @@ void UScrollUniformGridComp::UpdateAllSlots_Implementation()
 	}
 }
 
-bool UScrollUniformGridComp::UpdateSlotData_Implementation(int SlotIndex)
+bool UScrollUniformGridComp::UpdateSlotData_Implementation(UWidget* TargetWidget, int SlotIndex)
 {
-	if (SlotIndex < SlotDatas.Num() && Slot->Implements<USlotRelatedInterface>())
+	FItemDataStruct SlotData;
+	if (SlotIndex < SlotDatas.Num())
 	{
-		ISlotRelatedInterface::Execute_SetSlotData(Slot, SlotDatas[SlotIndex]);
+		SlotData = SlotDatas[SlotIndex];
+	}
+
+	if (TargetWidget && TargetWidget->Implements<USlotRelatedInterface>())
+	{
+		ISlotRelatedInterface::Execute_SetSlotData(TargetWidget, SlotData);
 		return true;
 	}
 	return false;

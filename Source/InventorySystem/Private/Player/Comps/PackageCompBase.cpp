@@ -15,12 +15,14 @@ bool UPackageCompBase::AddItemToPackage(FItemDataStruct ItemData)
 	int ItemIndex = FindItemSlotIndex(ItemData);
 	if (ItemIndex == -1)
 	{
-		ItemSlots.Emplace(ItemData);
+		ItemIndex = ItemSlots.Emplace(ItemData);
 	}
 	else
 	{
 		ItemSlots[ItemIndex].Quantity += ItemData.Quantity;
 	}
+
+	OnSlotDataChangedDelegate.Broadcast(ItemIndex, ItemSlots[ItemIndex]);
 	return true;
 }
 

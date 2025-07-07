@@ -24,7 +24,7 @@ public:
 	static TArray<FName> GetItemDataRowNames();
 
 	UFUNCTION(BlueprintCallable, Category = "InventorySystemHealper|Manager", meta=(DefaultToSelf="WorldContextObject"))
-	static bool MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutParams,AInventoryHUD* OutHUD);
+	static bool MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutParams,AInventoryHUD*& OutHUD);
 	UFUNCTION(BlueprintCallable, Category = "InventorySystemHealper|Manager", meta=(DefaultToSelf="WorldContextObject"))
 	static UPackageOverlayController* GetPackageOverlayController(UObject* WorldContextObject);
 };

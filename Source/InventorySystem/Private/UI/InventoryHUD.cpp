@@ -4,11 +4,11 @@
 
 UPackageOverlayController* AInventoryHUD::GetPackageOverlayController(const FWidgetControllerParams& WCParams)
 {
-	if (PackageOverlayController == nullptr)
+	if (!IsValid(PackageOverlayController))
 	{
 		PackageOverlayController = NewObject<UPackageOverlayController>(this,UPackageOverlayController::StaticClass());
 		PackageOverlayController->SetWidgetControllerParams(WCParams);
-		PackageOverlayController->BindCallbacksToDependencies();
+		PackageOverlayController->InitWidgetController();
 	}
 	return PackageOverlayController;
 }

@@ -34,16 +34,7 @@ struct FWidgetControllerParams
 	UPackageCompBase* PackageComp;
 };
 
-USTRUCT(BlueprintType)
-struct FUIWidgetStruct
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* Icon;
-};
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDataChangedSignature, int, Index, FUIWidgetStruct, NewStruct);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDataChangedSignature, int, Index, FItemDataStruct, NewData);
 
 UCLASS(BlueprintType, Blueprintable)
 class INVENTORYSYSTEM_API UPackageOverlayController : public UObject
@@ -53,15 +44,25 @@ class INVENTORYSYSTEM_API UPackageOverlayController : public UObject
 public:
 	UFUNCTION(BlueprintCallable)
 	virtual void SetWidgetControllerParams(const FWidgetControllerParams& Params);
-	virtual void BindCallbacksToDependencies();
+	virtual void InitWidgetController();
 
 	UFUNCTION(BlueprintCallable)
 	ABasePlayerController* GetMyPlayerController();
 
-	UPROPERTY(BlueprintAssignable)
-	FOnDataChangedSignature OnDataChanged;
-
 	FORCEINLINE TArray<FItemDataStruct> GetItemDatas(){return ItemDatas;}
+
+protected:
+	virtual void BindCallbacksToDependencies();
+	virtual void BroadcastInitializeValues();
+
+private:
+	UFUNCTION()
+	void UpdateSlotData(int InIndex, FItemDataStruct NewData);
+	
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnDataChangedSignature OnDataChangedDelegate;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<APlayerController> PlayerController;

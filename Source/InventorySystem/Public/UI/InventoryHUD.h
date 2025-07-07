@@ -17,5 +17,5 @@ public:
 
 private:
 	UPROPERTY()
-	UPackageOverlayController* PackageOverlayController;
+	UPackageOverlayController* PackageOverlayController = nullptr;
 };

@@ -15,8 +15,7 @@ UBaseUMGManager* UInventorySystemFuncLib::GetBaseUMGManager(UObject* WorldContex
 
 UDataTable* UInventorySystemFuncLib::GetItemDataTable()
 {
-	
-	UDataTable* ItemDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(),nullptr,TEXT("/Game/Data/DT_ItemData.DT_ItemData")));
+	UDataTable* ItemDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr,TEXT("/Game/Data/DT_ItemData.DT_ItemData")));
 	if (ItemDataTable)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Load Data Success"));
@@ -40,11 +39,11 @@ TArray<FName> UInventorySystemFuncLib::GetItemDataRowNames()
 	return RowNames;
 }
 
-bool UInventorySystemFuncLib::MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutParams, AInventoryHUD* OutHUD)
+bool UInventorySystemFuncLib::MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutParams, AInventoryHUD*& OutHUD)
 {
-	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject,0))
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
-		OutHUD = Cast<AInventoryHUD>(PlayerController->GetHUD());
+		OutHUD = PlayerController->GetHUD<AInventoryHUD>();
 		if (OutHUD)
 		{
 			OutParams.PlayerController = PlayerController;
@@ -60,10 +59,13 @@ bool UInventorySystemFuncLib::MakeWidgetControllerParams(const UObject* WorldCon
 UPackageOverlayController* UInventorySystemFuncLib::GetPackageOverlayController(UObject* WorldContextObject)
 {
 	FWidgetControllerParams WidgetControllerParams;
-	AInventoryHUD* InventoryHUD =nullptr;
+	AInventoryHUD* InventoryHUD = nullptr;
 	if (MakeWidgetControllerParams(WorldContextObject, WidgetControllerParams, InventoryHUD))
 	{
-		return InventoryHUD->GetPackageOverlayController(WidgetControllerParams);
+		if (InventoryHUD)
+		{
+			return InventoryHUD->GetPackageOverlayController(WidgetControllerParams);
+		}
 	}
 	return nullptr;
 }

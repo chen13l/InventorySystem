@@ -76,7 +76,10 @@ void ABasePlayerCharacter::PossessedBy(AController* NewController)
 
 void ABasePlayerCharacter::Pick_Implementation(const FItemDataStruct& PickupItemData)
 {
-	
+	if (PackageComponent)
+	{
+		PackageComponent->AddItemToPackage(PickupItemData);
+	}
 }
 
 UPackageCompBase* ABasePlayerCharacter::GetPackageComp_Implementation()

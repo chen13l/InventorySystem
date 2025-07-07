@@ -5,19 +5,22 @@
 #include "Types/InventoryStructs.h"
 #include "PackageCompBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSlotDataChangedSignature, int, Index, FItemDataStruct, NewData);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class INVENTORYSYSTEM_API UPackageCompBase : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:
-	UPackageCompBase();
-
 protected:
 	virtual void BeginPlay() override;
+
+	int FindItemSlotIndex(FItemDataStruct ItemData);
 	
 public:
-	FORCEINLINE TArray<FItemDataStruct> GetItemSlots(){return ItemSlots;}
+	UPackageCompBase();
+	
+	FORCEINLINE TArray<FItemDataStruct> GetItemSlotDatas(){return ItemSlots;}
 
 	UFUNCTION(BlueprintCallable)
 	bool AddItemToPackage(FItemDataStruct ItemData);
@@ -26,5 +29,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FItemDataStruct> ItemSlots;
 
-	int FindItemSlotIndex(FItemDataStruct ItemData);
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnSlotDataChangedSignature OnSlotDataChangedDelegate;
 };

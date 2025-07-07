@@ -31,7 +31,13 @@ struct FItemDataStruct : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Inventory|Item")
 	float Price = 0.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Inventory|Item")
-	float Quantity = 0.f;
+	int32 Quantity = 0.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Inventory|Item")
+	bool bCanStack = false;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Inventory|Item")
+	int32 MaxStackNum = 0;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Inventory|Item")
+	int32 CurrentStackNum = 0;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Inventory|Item")
 	FString Description = "";
 };
